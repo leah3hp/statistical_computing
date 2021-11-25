@@ -1,0 +1,71 @@
+---
+title: "SCclass2"
+output: html_document
+---
+
+() for functions 
+[] for vectors
+For boolean 1) comparison (set something true)
+            2) logical operators (and and or)
+            
+Numbers and characters-""
+To check types you do is.foo()
+convert from 1 type to another you do as.foo()
+check your Rspace by ls()-this is a list 
+    remove any variable by rm(var_name)
+DATA STRUCTURES
+1) vector-
+                  the asme basic type in 1 vector (do not mix)
+                  -initialize them by x=c[ ] or x=sequence(#, #, #) or x=NULL or x[i]=
+                  -to access them do x[ ]
+                      x[1:3] gets 1 through 3 x[c(-1,-3)] gets all but 1 and 3 positions                                          [ ] are always position
+                  -Vector aritmatic: x+y element by element 
+                  all vectors in R are column vectors
+                  there are different types of vector multiplication  
+                    t(x)%*%Y- the transpose of x times y to get matrix mult 
+                  - component wise comparison: x>y, (x>y)&(x>z) and these can be vecotors or numbers and                        will compare component wise 
+                  -checking equality: x==y will be a boolean vector and component wise 
+                                      allequal(x,y) will give you true or false 
+                                      identical(x,y) is vey strict 
+                  - Functions: any- boolean vectors if any are true 
+                               all- boolean if only all are true 
+                              ecdf(x)- shows what for example,x=rnorm(100), will look like
+                  - names: to name a element in vecotr names(x)=c("", "")
+                  - cant do $
+2) Arrays-
+   dim: specifies how many elements are in each dimention ex) dim=c(3,10) the first will have 3 elements and         second will have 10 elements 
+    -can initialize lke x[1,1]=7
+    - how to initialize all 0's and 1's 
+      x=array(0, dim=c(2,2)) will give a 2x2 matrix of all 0's
+      x.arr[c(1,2),2] will extract 1st and secod row and 2nd element in each row 
+      x.arr[,2] will give second row 
+      which(x.arrr >9) will give wich positios are greater 
+      x/y x*y will be elementwise 
+      if you dont want element wise but whole matriz to x%*%y 
+    - functons - rowSums, colSums, rowMeans, transpose t, determinant det, etc..- R is case sensative 
+               - diag(z.mat) will give z to diag elemetns
+               - z=diag(x) will extract such elements 
+3) List- 
+        a sequence of values, but not always of the same type 
+        can do mulitplication and such one you access the element 
+        ex) my.list=list(x,"a", ...)
+            x is a 2x2 matrix, a is a character 
+            my.list[[1]][1,1] will give you first diagonal element of x 
+        expanding and contracting: how to add to a list or take from 
+            my.list=c(my.list) to add 
+            can check length 
+            my.list[-2] to get rid of component 
+        names: names(my.list)=c(. . .)
+                my.list$family will extracts things in the family list 
+                my.list[[family]] will tell type 
+                my.list$estimate=NULL will also remove 
+                you gwt access to things in lists by their names 
+4) Data Frames- 
+      all colums can have different types 
+      can do $
+      a.df=data.frame(a.integers, b.characters, c.booleans)
+                      name1       name2         name3
+      can expand by rbind(a.df, c(3,4,5)) but will mess up logicals so use lists like in her example 
+                  
+\[a+b\] will display like LaTeX and in the middle of the page, as will $$-this is a note for myself                  
+                  

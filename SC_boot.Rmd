@@ -1,0 +1,140 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+ ---
+title: "Parametric and Nonparametric Bootstrap Confidence Intervals "
+Name: Leah Puglisi
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=TRUE)
+```
+
+In this project, you will construct a parametric and nonparametric bootstrap confidence intervals for the coefficient of variation of waiting time to next eruption for the Old Faithful geyser. The Old Faithful geyser dataset is the 'faithful' dataset in the `datasets' package.
+
+1. Data patterns and modeling
+===
+- **1a.** Plot the waiting time data and you will see that the data are clearly bimodal, and appear to be a mixture of two normal distributions.
+```{r}
+#Loading the data
+faith <- faithful
+#View(dat.faith)
+
+#Renaming the data
+eruptions <- faithful$eruptions
+waiting <- faithful$waiting
+
+hist(faith$eruptions, main="Old Faithful Eruptions",probability = TRUE)
+lines(density(faith$eruptions, width=12), lwd=2)
+
+hist(faith$waiting, main="Old Faithful Waiting Time between Eruptions", xlab = "Time in Minutes", probability = TRUE)
+lines(density(faith$waiting, width=12), lwd=2)
+```
+
+
+- **1b.** Model the distribution of waiting time using a Normal mixture distribution which has the form
+\begin{eqnarray}
+  f(x)
+    & = &
+  \sum_{i=1}^{k} \lambda_i f_i(x)
+  ,
+\nonumber
+\end{eqnarray}
+
+where $f_i(x)$ is a Normal density (could be other densities in general) and $\lambda_i$ is a proportional contribution of pdf $f_i(x)$ to the mixture $f(x)$. Let $\mu_i, \sigma^2_i$ denote the mean and variance of distribution $f_i(x)$. The parameters of $f(x)$ include $\lambda_i, \mu_i, \sigma^2_i, i=1, \dots, k$. 
+
+```{r}
+library(LaplacesDemon)
+p <- c(0.3,0.3,0.4)
+mu <- c(-5, 1, 5)
+sigma <- c(1, 2, 1)
+x <- seq(from=10, to=10, by=0.1)
+plot(x, dnorm(x, p, mu, sigma, log=FALSE), type = "1") #Density
+plot(x, pnorm(x, p, mu, sigma), type = "1") #CDF
+plot(density(rnorm(10000, p, mu, sigma))) #Random deviates
+
+```
+
+
+- **1c.** Fit the waiting time data to the Normal mixture model using the 'normalmixEM' function in the R package 'mixtools' (you may check out the algorithm in \url{https://cran.r-project.org/web/packages/mixtools/vignettes/mixtools.pdf}. Section 1 and 2 are related to the EM algorithm.). The model fit gives you estimates for $\lambda_i, \mu_i, \sigma^2_i, i=1, \dots, k$. Default sets $k$ at 2. In general, you may use AIC or BIC to select a $k$.
+
+```{r}
+library(mixtools)
+
+wait_mix_norm <- normalmixEM(faith$waiting, lambda = 0.5, mu = c(55,80), sigma = 5)
+#plot(wait_mix_norm, density=TRUE, cex.axis=1.4, cex.lab=1.4, cex.main=1.8, main2 = "Time between Old Faithful Eruptions", xlab2 = "Time in Minutes")
+wait_mix_norm[c("lambda", "mu", "sigma")]
+
+estimates <- normalmixEM(faith$waiting, arbvar = FALSE, epsilon=1e-03)
+```
+#-1034 is best AIC 
+
+```{r}
+library(mclust)
+mc <- Mclust(faith$waiting)
+mc
+mc$parameters$mean
+```
+- **1d.** EM algorithm produces asymptotic variance for the estimators for $\lambda_i, \mu_i, \sigma^2_i, i=1, \dots, k$. However, function'normalmixEM' does not give estimated asymptotic variances and hence we cannot obtain confidence intervals for the parameters. We explore bootstrap confidence intervals below.
+
+```{r}
+
+```
+
+
+2. Parametric bootstrap
+===
+
+- **1a.** Use the estimated parameters of the mixture distribution ($\hat{\lambda}_i, \hat{\mu}_i, \hat{\sigma}_i$ for $i=1,2$) to draw random deviates from the
+  mixture distribution. Specifically, draw a random deviate from each of the component distributions
+  ($N(x|\hat{\mu}_1, \hat{\sigma}_1^2)$ or $N(x|\hat{\mu}_2, \hat{\sigma}_2^2)$)
+  with probability proportional to their proportional contribution to the mixture
+  ($\hat{\lambda}_1$ and $\hat{\lambda}_2$). Write a function to sample random deviates using this strategy and plot a histogram based on a sample size equal to the original sample. This function should have the following
+arguments: $N$, number of samples; target distribution evaluation function parameters: $\lambda_i, \mu_i, \sigma^2_i, i=1, \dots, k$. It should return a vector of $N$ deviates from
+the target distribution.
+
+
+```{r}
+
+```
+
+- **1b.** Use the above function to perform a parametric bootstrap to calculate $R=10^4$ bootstrap values of the
+  coefficient of variation and compute a central 95\% CI.
+  
+```{r}
+
+```
+
+3. Nonparametric bootstrap
+===
+
+- **1a.** Draw $R=10^4$ samples with replacement from the orginal data sample 'faithful'.
+
+```{r}
+
+```
+
+- **1b.** For each bootstrap sample, use 'normalmixEM' function again to obtain estimates for the parameters.
+  Obtain central 95\% CI for each parameter.
+  
+```{r}
+
+```
+
+
+
+4. Write-up
+===
+Describe in detail the problem of interest, Normal mixture modeling, EM algorithm (optional), sampling from Normal mixtures, and parametric and nonparametric Bootstrap steps. Then discuss your simulation setup details. Finally present your result table and describe your findings (include comparison on results from parametric/nonparametric bootstrap methods).  Please attach your code as appendix.
+
+
+
+
+
+

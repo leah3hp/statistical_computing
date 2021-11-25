@@ -1,0 +1,317 @@
+---
+title: 'Lab 4: Plotting Tools'
+author: "Statistical Computing"
+output: pdf_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=TRUE)
+```
+
+Name:  Leah Puglisi 
+Collaborated with: Sam Gilletly 
+
+This lab is to be done in class (completed outside of class if need be). You can collaborate with your classmates, but you must identify their names above, and you must submit **your own** lab as an knitted pdf file. To answer the questions, display the results and write your comments if asked.
+
+Fastest 100m sprint times
+===
+
+Below, we read in a data set of the fastest times ever recorded for the 100m sprint, in men's track. (Usain Bolt may have slowed down now ... but he was truly one of a kind!) We also read in a data set of the fastest times ever recorded for the 100m, in women's track. 
+
+```{r}
+sprint.m.dat = read.table(
+  file="http://www.stat.cmu.edu/~ryantibs/statcomp/data/sprint.m.dat", 
+  sep="\t", quote="", header=TRUE)
+sprint.w.dat = read.table(
+  file="http://www.stat.cmu.edu/~ryantibs/statcomp/data/sprint.w.dat", 
+  sep="\t", quote="", header=TRUE)
+```
+
+Data frame and apply practice
+===
+
+- **1a.** Confirm that both `sprint.m.dat` and `sprint.w.dat` are data frames. Delete the `Rank` and `City` columns from each data frame. Then display the first and last 5 rows of each. **Challenge**: compute the ranks for the men's data set from the `Time` column and add them back as a `Rank` column to `sprint.m.dat`. Do the same for the women's data set. 
+
+```{r}
+class(sprint.m.dat)
+class(sprint.w.dat)
+
+df = subset(sprint.m.dat, select = -c(Rank, City) )
+#print(df)
+
+dt=subset(sprint.w.dat, select = -c(Rank, City) )
+#print(dt)
+
+head(df,5)
+tail(df,5)
+
+head(dt,5)
+tail(dt,5)
+
+```
+
+- **1b.** Using `table()`, compute for each unique country in the `Country` column of `sprint.m.dat`, the number of sprint times from this country that appear in the data set. Call the result `sprint.m.counts`. Do the same for the women, calling the result `sprint.w.counts`. What are the 5 most represented countries, for the men, and for the women? (Interesting side note: go look up the population of Jamaica, compared to that of the US. Pretty impressive, eh?) 
+
+```{r}
+#sprint.m.counts=table(sprint.m.dat$Country)
+#sprint.m.counts
+#sprint.w.counts=table(sprint.w.dat$Country)
+#sprint.w.counts
+#m=sort(sprint.m.counts)
+#tail(m)
+#w=sort(sprint.w.counts)
+#tail(w)
+ 
+sprint.m.counts = table(sprint.m.dat$Country)
+sprint.m.counts
+
+sprint.w.counts = table(sprint.w.dat$Country)
+sprint.w.counts
+
+head(sort(sprint.m.counts, decreasing = TRUE),5)
+head(sort(sprint.w.counts, decreasing = TRUE),5)
+
+#for men they are USA  JAM  GBR  TTO  CAN 
+#for women they are USA  JAM  BAH  GDR  NGR 
+```
+
+
+- **1c.** Are there any countries that are represented by women but not by men, and if so, what are they? Vice versa, represented by men and not women? Hint: you will want to use the `%in%` operator. If you're sure what it does you can read the documentation.
+
+```{r}
+sprint.m.countries = sprint.m.dat$Country
+unique(sprint.m.countries[!(sprint.m.dat$Country %in% sprint.w.dat$Country)])
+
+sprint.w.countries = sprint.w.dat$Country
+unique(sprint.w.countries[!(sprint.w.dat$country %in% sprint.m.dat$Country)])
+
+# 25 countries have male athletes but no female athletes and no counries have female athletes but no male athletes.
+```
+25 countries have male athletes but no female athletes and no counries have female athletes but no male athletes. 
+
+- **1d.** Using some method for data frame subsetting, and then `table()`, recompute the counts of countries in `sprint.m.dat`, but now only counting sprint times that are faster than or equal to 10 seconds. Call the result `sprint.m.10.counts`. Recompute counts for women too, now only counting sprint times that are faster than or equal to 11 seconds, and call the result `sprint.w.11.counts`. What are the 5 most represented countries now, for men, and for women? 
+
+```{r}
+sprint.m.10.counts = table(sprint.m.dat[sprint.m.dat$Time < 10,5])
+head(sort(sprint.m.10.counts,decreasing = TRUE),5)
+
+
+sprint.w.11.counts = table(sprint.w.dat[sprint.w.dat$Time < 11,5])
+head(sort(sprint.w.11.counts,decreasing = TRUE),5)
+
+#men: USA, JAM, TTO, CAN, FRA
+#women: USA, JAM, GDR, TTO, BAH
+```
+
+Plot basics
+===
+
+- **2a.** Below is some code that is very similar to that from the lecture, but with one key difference. Explain: why does the `plot()` result with with `type="p"` look normal, but the `plot()` result with `type="l"` look abnormal, having crossing lines? Then modify the code below (hint: modify the definition of `x`), so that the lines on the second plot do not cross. 
+
+```{r}
+n = 50
+set.seed(0)
+x = runif(n, min=-2, max=2)
+y = x^3 + rnorm(n)
+par(mfrow=c(2,1))
+plot(x, y, type="p")
+plot(x, y, type="l")
+```
+
+- **2b.** The `cex` argument can used to shrink or expand the size of the points that are drawn. Its default value is 1 (no shrinking or expansion). Values between 0 and 1 will shrink points, and values larger than 1 will expand points. Plot `y` versus `x`, first with `cex` equal to 0.5 and then 2 (so, two separate plots). Give titles "Shrunken points", and "Expanded points", to the plots, respectively.
+
+```{r}
+par(mfrow=c(2,1))
+plot(x,y, cex=0.5, main ="Shrunken point")
+plot(x,y, cex=2, main ="Expanded point")
+```
+
+
+- **2c.** The `xlim` and `ylim` arugments can be used to change the limits on the x-axis and y-axis, repsectively. Each argument takes a vector of length 2, as in `xlim = c(-1, 0)`, to set the x limit to be from -1 to 0. Plot `y` versus `x`, with the x limit set to be from -1 to 1, and the y limit set to be from -5 to 5. Assign x and y labels "Trimmed x" and "Trimmed y", respectively.
+
+```{r}
+plot(x,y, xlim=c(-1,1), ylim = c(-5,5), xlab= "xTrimmed", ylab= "yTrimmed")
+
+```
+
+- **2d.** Again plot `y` versus `x`, only showing points whose x values are between -1 and 1. But this time, define `x.trimmed` to be the subset of `x` between -1 and 1, and define `y.trimmed` to be the corresponding subset of `y`. Then plot `y.trimmed` versus `x.trimmed` without setting `xlim` and `ylim`: now you should see that the y limit is (automatically) set as "tight" as possible. Hint: use logical indexing to define `x.trimmed`, `y.trimmed`.
+
+```{r}
+x.trimmed=x[-1 <x & x<1]
+y.trimmed=y[-1 <x & x<1]
+plot(x.trimmed, y.trimmed, xlab= "xTrimmed", ylab= "yTrimmed", main="Zoomed in version")
+#zommed in 
+```
+
+- **2e.** The `pch` argument, recall, controls the point type in the display. In the lecture examples, we set it to a single number. But it can also be a vector of numbers, with one entry per point in the plot. So, e.g.,displays the first 10 point types. If `pch` is a vector whose length is shorter than the total number of points to be plotted, then its entries are recycled, as appropriate. Plot `y` versus `x`, with the point type alternating in between an empty circle and a filled circle. 
+
+```{r}
+plot(1:10, 1:10, pch=1:10)
+plot(1:10, 1:10, pch=c(1,19))
+#plot(x.trimmed, y.trimmed, xlab= "xTrimmed", ylab= "yTrimmed",pch=1:10)
+```
+
+- **2f.** The `col` argument, recall, controls the color the points in the display. It operates similar to `pch`, in the sense that it can be a vector, and if the length of this vector is shorter than the total number of points, then it is recycled appropriately. Plot `y` versus `x`, and repeat the following pattern for the displayed points: a black empty circle, a blue filled circle, a black empty circle, a red filled circle.
+
+```{r}
+plot(x, y, pch=c(1,19), col=c("black", "blue", "black", "red"))
+
+```
+
+Adding to plots
+===
+
+- **3a.** Produce a scatter plot of `y` versus `x`, and set the title and axes labels as you see fit. Then overlay on top a scatter plot of `y2` versus `x2`, using the `points()` function, where `x2` and `y2` are as defined below. In the call to `points()`, set the `pch` and `col` arguments appropriately so that the overlaid points are drawn as filled blue circles. 
+
+```{r}
+#x = runif(n, min=-2, max=2)
+#y = x^3 + rnorm(n)
+
+x2 = sort(runif(n, min=-2, max=2))
+y2 = x^2 + rnorm(n)
+plot(x,y, pch=c(2,1), col=c("black", "red"), main="Linearity between Uniform RVs vs Cubic Uniform RVs by Normal RVs ", xlab ="Random Uniform RVs", ylab="Random Cubic Uniform RVs by Normal RVs ", cex=2 )
+
+points(x2, y2, cex=1, pch=19, col=c("blue"), main= "Uniform RVs vs Normal RVs by Squared Uniform RVs")
+
+#z3 <- points(z1, z2,pch=c(3,13), col=c("yellow", "black") )
+#z3
+#lines(x2, y2)
+
+```
+
+- **3b.** Starting with your solution code from the last question, overlay a line plot of `y2` versus `x2` on top of the plot (which contains empty black circles of `y` versus `x`, and filled blue circles of `y2` versus `x2`), using the `lines()` function. In the call to `lines()`, set the `col` and `lwd` arguments so that the line is drawn in red, with twice the normal thickness. Look carefully at your resulting plot. Does the red line pass overtop of or underneath the blue filled circles? What do you conclude about the way R *layers* these additions to your plot?
+
+```{r}
+x2 = sort(runif(n, min=-2, max=2))
+y2 = x^2 + rnorm(n)
+plot(x,y, col=c("black"), main="Linearity between Uniform RVs vs Cubic Uniform RVs by Normal RVs ", xlab ="Random Uniform RVs", ylab="Random Cubic Uniform RVs by Normal RVs ", cex=2 )
+points(x2, y2, cex=1, pch=19, col=c("blue"), main= "Uniform RVs vs Normal RVs by Squared Uniform RVs")
+lines(x2, y2, col="red", lwd=2 )
+
+#The lines pass on top of the blue dots, so R must read line by line for layering 
+```
+
+- **3c.** Starting with your solution code from the last question, add a legend to the bottom right corner of the the plot using `legend()`. The legend should display the text: "Cubic" and "Quadratic", with corresponding symbols: an empty black circle and a filled blue circle, respectively. Hint: it will help to look at the documentation for `legend()`.
+
+```{r}
+x2 = sort(runif(n, min=-2, max=2))
+y2 = x^2 + rnorm(n)
+plot(x,y, col=c("black"), main="Linearity between Uniform RVs vs Cubic Uniform RVs by Normal RVs ", xlab ="Random Uniform RVs", ylab="Random Cubic Uniform RVs by Normal RVs ", cex=2 )
+
+points(x2, y2, cex=1, pch=19, col=c("blue"), main= "Uniform RVs vs Normal RVs by Squared Uniform RVs")
+lines(x2, y2, col="red", lwd=2 )
+legend(x=1, y=-4, legend=c("Cubic", "Quad"),col=c("black","blue"), pch=c(1,19))
+```
+
+- **3d.** Produce a plot of `y` versus `x`, but with a gray rectangle displayed underneath the points, which runs has a lower left corner at `c(-2, qnorm(0.1))`, and an upper right corner at `c(2, qnorm(0.9))`. Hint: use `rect()` and consult its documentation. Also, remember how layers work; call `plot()`, with `type="n"` or `col="white"` in order to refrain from drawing any points in the first place, then call `rect()`, then call `points()`.
+
+```{r}
+plot(x,y, type="n", col="white")
+rect(xleft=c(-2, qnorm(0.1)), ybottom=c(-1, qnorm(0.9)), xright=c(2, qnorm(0.1)), ytop=c(1, qnorm(0.9)), col="grey")
+points(x,y)
+#if sn contains 80% data 
+
+```
+
+Text manipulations, and layered plots
+===
+
+- **4a.** Back to the sprinters data set: define `sprint.m.times` to be the `Time` column of `sprint.m.dat`. Define `sprint.m.dates` to be the `Date` column of `sprint.m.dat`, converted into a character vector. Define a character vector `sprint.m.years` to contain the last 4 characters of an entry of `sprint.m.dates`. Hint: use `substr()`. Finally, convert `sprint.m.years` into a numeric vector. Display its first 10 entries.
+
+```{r}
+sprint.m.times=sprint.m.dat$Time
+sprint.m.dates=as.character(sprint.m.dat$Date)
+sprint.m.years=as.numeric(substr(sprint.m.dates,7,10))
+head(sprint.m.years,10)
+```
+
+- **4b.** Plot `sprint.m.times` versus `sprint.m.years`. For the point type, use small, filled black circles. Label the x-axis "Year" and the y-axis "Time (seconds)". Title the plot "Fastest men's 100m sprint times". Using `abline()`, draw a dashed blue horizontal line at 10 seconds. Using `text()`, draw below this line, in text on the plot, the string "N men", replacing "N" here by the number of men who have run under 10 seconds. Your code should programmatically determine the correct number here, and use `paste()` to form the string. Comment on what you see visually, as per the sprint times across the years. What does the trend look like for the fastest time in any given year?
+
+
+```{r}
+t=sprint.m.times
+y=sprint.m.years
+plot(y, t, xlab="Year", ylab="Time(seconds)",cex=0.4,pch=19,col="black" , main= "Fastest men's 100m sprint times")
+abline(a=10,b=0, lty="dashed", lwd=2 , col="blue")
+n=length(sprint.m.times[sprint.m.times<10])
+n
+text(x=1973, y=9.98, labels= paste(as.character(n), "men"))
+
+#the distribution looks left skew and it looks like over the yars maybe more people participate and time is becoming more variable. The time for any single given year varies mostly between 9.6 and 10.1 seconds
+```
+
+- **4c.** Reproduce the previous plot, but this time, draw a light blue rectangle underneath all of the points below the 10 second mark. The rectangle should span the entire region of the plot below the horizontal line at $y=10$. And not only the points of sprint times, but the blue dashed line, and the text "N men" (with "N" replaced by the appropriate number) should appear *on top* of the rectangle. Hint: use `rect()` and layering as appropriate.
+
+```{r}
+t=sprint.m.times
+y=sprint.m.years
+plot(y, t, xlab="Year", ylab="Time(seconds)",cex=0.4,pch=19,col="black" , main= "Fastest men's 100m sprint times")
+abline(a=10,b=0, lty="dashed", lwd=2 , col="blue")
+n=length(sprint.m.times[sprint.m.times<10])
+n
+text(x=1973, y=10.02, labels= paste(as.character(n), "men"))
+
+rect(xleft=min(sprint.m.years), ybottom=min(sprint.m.times), xright=max(sprint.m.years), ytop=10, col=rgb(red=0, green=0,blue=1, alph=0.4))
+```
+
+
+More text manipulations, and histograms
+===
+
+- **5a.** Extract the birth years of the sprinters from the data frame `sprint.m.dat`. To do so, define `sprint.m.bdates` to be the `Birthdate` column of `sprint.m.dat`, converted into a character vector. Then define a character vector `sprint.m.byears` to contain the last 2 characters of each entry of `sprint.m.bdates`. Convert `sprint.m.byears` into a numeric vector, add 1900 to each entry, and redefine `sprint.m.byears` to be the result. Finally, compute a vector `sprint.m.ages` containing the age (in years) of each sprinter when their sprint time was recorded. Hint: use `sprint.m.byears` and `sprint.m.years`. 
+```{r}
+sprint.m.bdates=as.character(sprint.m.dat$Birthdate)
+sprint.m.byears=as.numeric(substr(sprint.m.bdates,7,8))+ 1900
+sprint.m.ages= sprint.m.years-sprint.m.byears
+```
+
+- **5b.** Repeat the last question, but now for the data `sprint.w.dat`, arriving at a vector of ages called `sprint.w.ages`.
+```{r}
+sprint.w.bdates=as.character(sprint.w.dat$Birthdate)
+sprint.w.byears=as.numeric(substr(sprint.w.bdates,7,8))+ 1900
+sprint.w.ages= as.numeric(substr(as.character(sprint.w.dat$Date),7,10))-sprint.w.byears
+```
+
+- **5c.** Using one of the apply functions, compute the average sprint time for each age in `sprint.m.ages`, calling the result `time.m.avg.by.age`. Similarly, compute the analogous quantity for the women, calling the result `time.w.avg.by.age`. Are there any ages for which the men's average time is faster than 10 seconds, and if so, which ones? Are there any ages for which the women's average time is faster than 10.98 seconds, and if so, which ones?
+```{r}
+time.m.avg.by.age= tapply(sprint.m.times, sprint.m.ages, mean)
+time.m.avg.by.age
+time.w.avg.by.age= tapply(sprint.w.dat$Time, sprint.w.ages, mean)
+time.w.avg.by.age
+#men 33, women 29,33,36,37
+```
+
+- **5d.** Plot a histogram of `sprint.m.ages`, with break locations occuring at every age in between 17 and 40. Color the histogram to your liking; label the x-axis, and title the histogram appropriately. What is the mode, i.e., the most common age? Also, describe what you see around the mode: do we see more sprinters who are younger, or older? 
+```{r}
+a<-hist(sprint.m.ages, breaks=seq(17,40,1), col="red", xlab = "Sprint Ages of Men", main= "Frequency Distribution of Mens Age Sprintin in Rio Olympics")
+
+#mode is at 21 and it looks like more people fall to the older age than 21. This is a right skew distibution. 
+```
+
+
+Maungawhau volcano and heatmaps
+===
+
+- **6a.** The `volcano` object in R is a matrix of dimension 87 x 61. It is a digitized version of a topographic map of the Maungawhau volcano in Auckland, New Zealand. Plot a heatmap of the volcano using `image()`, with 25 colors from the terrain color palette. 
+```{r}
+image(volcano, col=topo.colors(25))
+
+```
+
+- **6b.** Each row of `volcano` corresponds to a grid line running east to west. Each column of `volcano` corresponds to a grid line running south to north. Define a matrix `volcano.rev` by reversing the order of the rows, as well as the order of the columns, of `volcano`. Therefore, each row `volcano.rev` should now correspond to a grid line running west to east, and each column of `volcano.rev` a grid line running north to south. 
+```{r}
+volcano.fun = function(a) { t(a[nrow(a):1,]) } # Handy rotate function
+volcano.rev=volcano.fun(volcano)
+```
+
+- **6c.** If we printed out the matrix `volcano.rev` to the console, then the elements would follow proper geographic order: left to right means west to east, and top to bottom means north to south. Now, produce a heatmap of the volcano that follows the same geographic order. Hint: recall that the `image()` function rotates a matrix 90 degrees counterclockwise before displaying it; and recall the function `clockwise90()` from the lecture, which you can copy and paste into your code here. Label the x-axis "West --> East", and the y-axis "South --> North". Title the plot "Heatmap of Maungawhau volcano".
+```{r}
+image(volcano.rev, xlab ="West --> East", ylab ="South --> North", main = "Heatmap of Maungawhau volcano" )
+```
+
+- **6d.** Reproduce the previous plot, and now draw contour lines on top of the heatmap.
+```{r}
+
+image(volcano.rev, xlab ="West --> East", ylab ="South --> North", main = "Heatmap of Maungawhau volcano with contour lines" )
+contour(volcano.rev, add=TRUE)
+```

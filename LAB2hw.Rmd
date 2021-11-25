@@ -1,0 +1,303 @@
+---
+title: 'Lab 2: Indexing, Iteration, and Text Manipulation'
+author: "Statistical Computing- Leah Puglisi"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=TRUE)
+```
+
+Name:  Leah Puglisi 
+Collaborated with: Sam Gilletly  
+
+This lab is to be done in class (completed outside of class if need be). You can collaborate with your classmates, but you must identify their names above, and you must submit **your own** lab as an knitted HTML file. To answer the questions, display the results and write your comments if asked.
+
+
+```{r}
+## For reproducibility --- don't change this!
+set.seed(01182018)
+```
+
+
+Prostate cancer data set
+===
+
+We're going to look at a data set on 97 men who have prostate cancer (from the book [The Elements of Statistical Learning](http://statweb.stanford.edu/~hastie/ElemStatLearn/)). There are 9 variables measured on these 97 men:
+
+1. `lpsa`: log PSA score
+2. `lcavol`: log cancer volume
+3. `lweight`: log prostate weight
+4. `age`: age of patient
+5. `lbph`: log of the amount of benign prostatic hyperplasia
+6. `svi`: seminal vesicle invasion
+7. `lcp`: log of capsular penetration
+8. `gleason`: Gleason score 
+9. ` pgg45`: percent of Gleason scores 4 or 5 
+
+To load this prostate cancer data set into your R session, and store it as a matrix `pros.dat`:
+
+```{r}
+pros.dat =
+  as.matrix(read.table("https://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data"))
+```
+
+Basic indexing and calculations
+===
+
+- **1a.** What are the dimensions of `pros.dat` (i.e., how many rows and how many columns)? Using integer indexing, print the first 6 rows and all columns; again using integer indexing, print the last 6 rows and all columns.
+
+
+```{r}
+dim( pros.dat)
+pros.dat[1:6,]
+dim(pros.dat[1])
+pros.dat[92:97,]
+```
+
+
+
+- **1b.** Using the built-in R functions `head()` and `tail()` (i.e., do *not* use integer indexing), print the first 6 rows and all columns, and also the last 6 rows and all columns.
+
+```{r}
+head(pros.dat,6)
+tail(pros.dat,6)
+
+```
+
+- **1c.** Does the matrix `pros.dat` have names assigned to its rows and columns, and if so, what are they? Use `rownames()` and `colnames()` to find out. Note: these would have been automatically created by the `read.table()` function that we used above to read the data file into our R session. To see where `read.table()` would have gotten these names from, open up the data file: https://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data in your web browser. Only the column names here are actually informative.
+
+```{r}
+rownames(pros.dat)
+colnames(pros.dat)
+
+# yes they do: "lcavol"  "lweight" "age"     "lbph"    "svi"     "lcp"     "gleason" 
+#"pgg45"   "lpsa"    "train" : these are only the column names. the rows are just numbered 1-97 
+```
+
+- **1d.** Using named indexing, pull out the two columns of `pros.dat` that measure the log cancer volume and the log cancer weight, and store the result as a matrix `pros.dat.sub`. (Recall the explanation of variables at the top of this lab.) Check that its dimensions make sense to you, and that its first 6 rows are what you'd expect. Did R automatically assign column names to `pros.dat.sub`?
+
+```{r}
+pros.dat.sub2=pros.dat[, c("lcavol", "lweight")]
+#print(pros.dat.sub2)
+
+# R assigned the names  were correlated to the variables called and the row again runs 1-97
+```
+
+
+- **1e.** Using the log cancer weights and log cancer volumes, calculate the log cancer density for the 97 men in the data set (note: by density here we mean weight divided by volume). There are in fact two different ways to do this; the first uses three function calls and one arithmetic operation; the second just uses one arithmetic operation. Note: in either case, you should be able to perform this computation for all 97 men *with a single line of code*, taking advantage of R's ability to vectorize. Write code to do it both ways, and show that both ways lead to the same answer, using `all.equal()`.
+
+```{r}
+#dens1= pros.dat.sub2[,2]/pros.dat[,1]
+#head(dens1,6)
+
+dens2=log(exp(pros.dat.sub2[,2])/exp(pros.dat[,1]))
+head(dens2,6)
+
+dens3= pros.dat.sub2[,2]-pros.dat[,1]
+head(dens3,6)
+
+all.equal(dens2,dens3)
+
+# they are equal as you can see and the boolean all.equal says TRUE
+
+```
+
+- **1f.** Append the log cancer density to the columns of `pros.dat`, using `cbind()`. The new `pros.dat` matrix should now have 10 columns. Set the last column name to be `ldens`. Print its first 6 rows, to check that you've done all this right.
+
+```{r}
+pros.dat=cbind(pros.dat, dens2)
+colnames(pros.dat)[dim(pros.dat)[2]]="ldens"
+head(pros.dat[,"ldens"])
+```
+
+Exploratory data analysis with plots
+===
+
+- **2a.** Using `hist()`, produce a histogram of the log cancer volume measurements of the 97 men in the data set; also produce a histogram of the log cancer weight. In each case, use `breaks=20` as an arugment to `hist()`. Comment just briefly on the distributions you see. Then, using `plot()`, produce a scatterplot of the log cancer volume (y-axis) versus the log cancer weight (x-axis). Do you see any kind of relationship? Would you expect to? **Challenge**: how would you measure the strength of this relationship formally? Note that there is certainly more than one way to do so. We'll talk about statistical modeling tools later in the course.
+
+```{r}
+hist(pros.dat[,"lcavol"], breaks=20)
+plot(pros.dat[,"lcavol"], pros.dat[,"lweight"], xlab="weight", ylab="volume")
+
+class(pros.dat)
+cor(pros.dat)
+
+# you would want to look at correlation and higher dimension reliablility of how 
+#the variables relate and if they are in a similar dimension or not. weight ad 
+#volume seem to be slightly positively correlated at rho=0.28.
+```
+- **2b.** Produce scatterplots of log cancer weight versus age, and log cancer volume versus age. Do you see relationships here between the age of a patient and the volume/weight of his cancer?
+
+```{r}
+plot(pros.dat[,"lweight"], pros.dat[,"age"], xlab="age", ylab="weight")
+
+y <-plot(pros.dat[,"lcavol"], pros.dat[,"age"], xlab="age", ylab="vol")
+
+#both of these scatterplots look pretty scattered with maybe a slight positive
+#increase; as age goes up so does weight/vol. Both have a bit of clutering near mid and late age.
+
+```
+
+- **2c.** Produce a histogram of the log cancer density, and a scatterplot of the log cancer density versus age. Comment on any similarities/differences you see between these plots, and the corresponding ones you produced above for log cancer volume/weight.
+
+```{r}
+hist(pros.dat[,"ldens"], xlab="density")
+
+plot(pros.dat[,"age"], pros.dat[,"ldens"], xlab="age", ylab="density")
+
+# again there is weird clutering near the later ages and higher vlumes with those 
+#later ages. The frequency seems slightly normal and the scatter plot has a hard 
+#to define shape if any even exists.
+```
+
+
+A bit of Boolean indexing never hurt anyone
+===
+
+- **3a.** The `svi` variable in the `pros.dat` matrix is binary: 1 if the patient had a condition called "seminal vesicle invasion" or SVI, and 0 otherwise. SVI (which means, roughly speaking, that the cancer invaded into the muscular wall of the seminal vesicle) is bad: if it occurs, then it is believed the prognosis for the patient is poorer, and even once/if recovered, the patient is more likely to have prostate cancer return in the future. Compute a Boolean vector called `has.svi`, of length 97, that has a `TRUE` element if a row (patient) in `pros.dat` has SVI, and `FALSE` otherwise. Then using `sum()`, figure out how many patients have SVI.
+
+
+```{r}
+
+has.svi=as.logical(pros.dat[,"svi"])
+sum(pros.dat[,"svi"])
+```
+
+- **3b.** Extract the rows of `pros.dat` that correspond to patients with SVI, and the rows that correspond to patients without it. Call the resulting matrices `pros.dat.svi` and `pros.dat.no.svi`, respectively. You can do this in two ways: using the `has.svi` Boolean vector created above, or using on-the-fly Boolean indexing, it's up to you. Check that the dimensions of `pros.dat.svi` and `pros.dat.no.svi` make sense to you.
+
+```{r}
+pros.dat.svi=pros.dat[has.svi==TRUE,]
+dim(pros.dat.svi)
+pros.dat.nosvi=pros.dat[has.svi==FALSE,]
+dim(pros.dat.nosvi)
+```
+
+Computing standard deviations using iteration
+===
+
+- **4a.** Take a look at the starter code below. The first line defines an empty vector `pros.dat.svi.sd` of length `ncol(pros.dat)` (of length 9). The second line defines an index variable `i` and sets it equal to 1. Write a third line of code to compute the standard deviation of the `i`th column of `pros.dat.svi`, using a built-in R function, and store this value in the `i`th element of `pros.dat.svi.sd`. 
+ 
+```{r}
+pros.dat.svi.sd = vector(length=ncol(pros.dat))
+i = 1
+pros.dat.svi.sd[i]=sd(pros.dat.svi[,i])
+```
+
+
+- **4b.** Write a `for()` loop to compute the standard deviations of the columns of `pros.dat.svi`, and store the results in the vectors `pros.dat.svi.sd`, that were created above. Note: you should have a single `for()` loop here, not two for loops. And if it helps, consider breaking this task down into two steps: as the first step, write a `for()` loop that iterates an index variable `i` over the integers between 1 and the number of columns of `pros.dat` (don't just manually write 9 here, pull out the number of columns programmatically), with an empty body. 
+
+```{r}
+pros.dat.nosvi.sd = vector(length=ncol(pros.dat))
+for(i in 1:length(pros.dat.svi.sd)){
+  pros.dat.svi.sd[i]=sd(pros.dat.svi[,i])
+  pros.dat.nosvi.sd[i]=sd(pros.dat.svi[,i])
+  
+}
+
+# running through i itterations and i is an integer, running through the legnth and 
+#runs through loop for each i and taking the sd and storing the i-th location 
+```
+
+- **4c.** The code below computes the standard deviations of the columns of `pros.dat.svi`, and stores them in `pros.dat.svi.sd.master`, using `apply()`. (We'll learn `apply()` and related functions a bit later in the course.) Remove `eval=FALSE` as an option to the Rmd code chunk, and check using `all.equal()` that the standard deviations you computed in the previous question equal these "master" copies. Note: use `check.names=FALSE` as a third argument to `all.equal()`, which instructs it to ignore the names of its first two arguments. (If `all.equal()` doesn't succeed in both cases, then you must have done something wrong in computing the standard deviations, so go back and fix them!)
+
+```{r, eval=TRUE} 
+#changed from false 
+pros.dat.svi.sd.master = apply(pros.dat.svi, 2, sd)
+all.equal(pros.dat.svi.sd.master, pros.dat.svi.sd, chech.names=FALSE)
+```
+
+
+Shakespeare's complete works
+===
+
+[Project Gutenberg](http://www.gutenberg.org) offers over 50,000 free online books, especially old books (classic literature), for which copyright has expired. We're going to look at the complete works of [William Shakespeare](https://en.wikipedia.org/wiki/William_Shakespeare), taken from the Project Gutenberg website. 
+
+To avoid hitting the Project Gutenberg server over and over again, please download the file from the course website.
+
+
+Reading in text, basic exploratory tasks
+===
+
+- **5a.** Read in the Shakespeare data linked above into your R session with `readLines("https://math.unm.edu/~lil/Stat590/labs/shakespeare.txt"")`. Make sure you are reading the data file directly from the web (rather than locally, from a downloaded file on your computer). Call the result `shakespeare.lines`. This should be a vector of strings, each element representing a "line" of text. Print the first 5 lines. How many lines are there? How many characters in the longest line? What is the average number of characters per line? How many lines are there with zero characters (empty lines)? Hint: each of these queries should only require one line of code; for the last one, use an on-the-fly Boolean comparison and `sum()`.
+```{r}
+shakespeare.lines=readLines("https://math.unm.edu/~lil/Stat590/labs/shakespeare.txt")
+shakespeare.lines[1:5] #use bracs for index 
+length(shakespeare.lines) # ( ) are for fxns!
+
+max.char=nchar(shakespeare.lines)
+max.char[1:5]
+max(nchar(shakespeare.lines))
+
+mean(nchar(shakespeare.lines))
+
+sum(1*(shakespeare.lines ==""))
+
+```
+- **5b.** Remove all empty lines from `shakespeare.lines` (i.e., lines with zero characters). Check that that the new length of `shakespeare.lines` makes sense to you.
+
+```{r}
+shake2=shakespeare.lines[shakespeare.lines!=""]
+shake2[1:5]
+```
+
+- **5c.** Collapse the lines in `shakespeare.lines` into one big string, separating each line by a space in doing so, using `paste()`. Call the resulting string `shakespeare.all`. How many characters does this string have? How does this compare to the sum of characters in `shakespeare.lines`, and does this make sense to you?
+
+```{r}
+shakeall=paste(shakespeare.lines, collapse=" ")
+nchar(shakeall)
+
+sum(nchar(shakespeare.lines)) + length(shakespeare.lines)
+#There are  5,586,354 characters in the file and then when I look at eh sum of characters, 
+#there are 5,586,355, which is one more. So the sum is probably adding a space at the end as a 
+#character. It makes sense as each word has so many characters and then there are spaces and 
+#periods, and commas and so on.
+
+```
+
+
+- **5d.** Split up `shakespeare.all` into words, using `strsplit()` with `split=" "`. Call the resulting string vector (note: here we are asking you for a vector, not a list) `shakespeare.words`. How long is this vector, i.e., how many words are there? Using the `unique()` function, compute and store the unique words as `shakespeare.words.unique`. How many unique words are there?  
+
+```{r}
+shakespeare.words = strsplit(shakeall, split = " ")[[1]]
+length(shakespeare.words)
+shakespeare.words.unique = unique(shakespeare.words)
+length(shakespeare.words.unique)
+
+#There are 1268979 words and 76560 unique words.
+
+```
+
+- **5e.** Plot a histogram of the number of characters of the words in `shakespeare.words.unique`. You will have to set a large value of the `breaks` argument (say, `breaks=50`) in order to see in more detail what is going on. What does the bulk of this distribution look like to you? Why is the x-axis on the histogram extended so far to the right (what does this tell you about the right tail of the distribution)?
+
+```{r}
+swu=as.numeric(shakespeare.words.unique)
+hist(swu, breaks=50 )
+# the bulk of the distribution looks uniform, it in total looks right skew, and could look exponential 
+#to some extent. The x-axis is clustering our unique words and ideally would go to 76,000 
+#but that would be really impracticle so it is grouping some amount of unique words into each bin. 
+
+```
+
+
+- **5f.** Using `table()`, compute counts for the words in `shakespeare.wordtab`, and save the result as `shakespeare.wordtab`. How long is `shakespeare.wordtab`, and is this equal to the number of unique words (as computed above)? Using named indexing, answer: how many times does the word "thou" appear? The word "rumour"? The word "gloomy"? The word "assassination"?
+
+
+```{r}
+
+shakespeare.wordtab=table(shakespeare.words)
+length(shakespeare.wordtab)
+
+# This is equal to the word count. this is making a tabe of all "unique" columns(words).
+
+shakespeare.wordtab["thou"]
+shakespeare.wordtab["rumour"]
+shakespeare.wordtab["gloomy"]
+shakespeare.wordtab["assassination"]
+
+
+
+```
+

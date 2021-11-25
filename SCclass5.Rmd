@@ -1,0 +1,32 @@
+---
+title: "SCclass5"
+output: html_document
+---
+```
+REVIEW
+characters
+  stringd: " "
+  print strings using cat()
+    \n- new line 
+    \t- new tab
+vectors 
+  functions: substr(name, 1st, last)- to get substring
+             subst(name=" ")- replace 
+             strsplit(name, strsplit=" ")- to split a string 
+             paste(str1, str2, " ")- to sombine strings 
+             paste(name, collapse=" ")- to condense 
+             readlines() to read in a file
+             
+```
+
+``` 
+TODAY- data frame
+  class()- to tell you if matrix, data reame, vector,...
+  df just stacks columns and doesnt need a similar key like merging does 
+apply()-
+  INDEX defines a subset
+
+```
+  
+             
+            

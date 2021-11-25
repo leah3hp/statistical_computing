@@ -1,0 +1,46 @@
+---
+title: "lab4class"
+author: "Statistical Computing- Leah Puglisi"
+output: pdf_document
+---
+```
+Review: 
+  Conditionals- if(){} else
+                if (){} else if(){}else{}
+                if-else (logical, , )
+  loops- for(i in 1:n){}
+         while (logical){}
+         repeat{}
+  ex) x=c(-1, 2 3 4 -2)
+    create a vector Y so that y[i]=1*(x[i]>0)+2(x[i]<=0)
+    y=NULL for (i in 1:5){
+    if (x[i]>0){y[i]=1}
+    else {y[i]=2}
+    }
+    
+    replace loop with y=1*(x>0)+2*(x<=0)
+    
+    i=1
+    while (i<=5){
+    if (x[i]>0){y[i]=1}
+    else {y[i]=2}
+    i=i+1
+    }
+    
+
+Today: Text Manipulation-Character and string: characters together, and how to read and summarize text
+
+Strings: anything separeated by space is a char and a space itslef 
+Vector of strings: needs to start with c()
+
+
+1- read file
+2- condense the vector of strings use (paste(,collapse))
+3- split the string 
+4- make sure unique word doesnt have ; or , or. 
+  a=strsplit(text, split="")[[1]]
+  a=a[!(a==","|a=="."|a==""?...)]
+5- paste(a, collapse="")
+6- check length
+7- cat(): to print 
+```

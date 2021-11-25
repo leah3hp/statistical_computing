@@ -1,0 +1,99 @@
+---
+title: "SCclass1"
+output: html_document
+---
+# functions take 2 argurments at least
+# debug one at a time (top to bottom) 
+# all data structers are stored in bits 
+# missing - INF (infinite), NA, NaN
+
+```{r}
+#OPERATORS
+# == is comparison ex) input: 7==5 output: FALSE
+# %%	Modulus (Remainder from division)
+# %/%	Integer Division
+# parenthesis are good practice and will evaluate more correctly 
+# if evaluation multiple & | and there is 1 TRUE, the whole thing is true 
+```
+
+```{r}
+#TYPE(s)
+
+typeof(7)
+
+#tells you the type of data you have 
+
+is.numeric(7)
+
+#is.foo or as.foo (foo) is a place holder for functions like .numeric, .caracter, .is.na,  etc
+
+is.na(0/0)
+
+is.character("7")
+
+#all character signs have quotes 
+
+#can change from number to character (most common) character to number (less common)
+
+as.character(5/7)
+
+6*as.numeric(as.character(5/6))
+
+5/6 == as.numeric(as.character(5/6))
+```
+
+```{r}
+# NAMES 
+
+#all data has names: 
+pi 
+cos(1)
+cos(pi)
+sin(0)
+#when come up with names keep it brief ( periods . are okay but R uses as a function too so bettter to use _ underscores) and avoid magic constants (aready exist in R)
+
+#ls: gives all variabes you defined 
+#rm: gets rid of variables 
+#rm(list=ls()): deletes all variables 
+#getting rid of variables is useful when doing iterations 
+```
+
+```{r}
+#this is an ordered vector and c() declsirs a vector 
+
+x=c(7,8,10,45)
+x
+is.vector(x)
+
+y=1:5 #gives a vector of 1-5 
+
+x[-4] #takes out 4th element, anything but the 4th position 
+x[4] #gives only 4th element 
+
+vector(length=10) #wont return anything as not assigned to a variable 
+
+weekly.hrs=vector(length=5) #makes that variable have length 5 of all 0 unless you do following
+weekly.hrs
+weekly.hrs[5]=8 #makes 5th element of the vaue 8 
+weekly.hrs
+
+x+c(-7,-8) #does to each element in order
+x^c(1,0,-1,0.5)
+
+x>9 # componentwise comparison of most recently stored x 
+x== -y #compares each element 
+#identical(x, -y) #more exact and compares storage types
+
+#summary() # gives 5 mun sum
+
+#any() all( ) #for boolean vector "are any or all true"
+
+x[c(-1,-3)] #removes 1st and 3rd spaces 
+
+x[x>9] #this will select true ones 
+
+places=which(x>9) # will return the positions that are true not the value 
+
+names(x)=c("v1", "v2", "chad", "fred")
+names(x)
+```

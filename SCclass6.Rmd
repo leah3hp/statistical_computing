@@ -1,0 +1,17 @@
+---
+title: "SClass6"
+output: html_document
+---
+
+```
+Review
+
+  apply- use for a matrix or a data frame 
+    apply to each row or column- mn/max, mean/sd/sum, summary, seld-defined
+  lapply( a list or a vector, FUN)- returns a list 
+  sapply(a list or vector, FUN)- returns a vector 
+  tapply(input is a vector)
+
+Today
+  see notes 
+```

@@ -1,0 +1,72 @@
+---
+title: "SCclass3"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+#Review: 
+```
+  ##Array: a data structure
+         -how to initialize-x=array(0, dim=c(2, 2, 2)) 
+         check the dim- dim(x)
+         access array element- x[1,1,1] will give you first element of each dim
+                               x[1:2, 1 ,1 ] will give 1st 2 elements of first dim and 1st of 2nd and 3rd
+                               x=array(0,dim=c(2,2))
+                               colmanes(x)=c("v1", "v2")
+                               x[,"v1"]
+         fxns- x +- y x*/y element wise 
+              for matrix: x%*%y and the dim has to match - nxm and mxl
+              t(x) - transpose det(x)- determinant solve(x)- inverse 
+              roeSum(x) or colSum(x) row/colMeans(x)
+ ##List: a data structure to store all types of data together
+        -initilization: my.list=list(v1=x1, v2=y) v2 and v1 can have different structures (logicals and               numerics that dont need same length or dim)
+        -access: my.list[1]-location 1 and gives name,  my.list[[1]], my.list$v1 is best way 
+        -get rid: my.list$v1=NULL
+        -add: my.list$v4=[ ]
+  ##Data frame: data structure somewhere between a list and array
+            - initialize: a.df=data.frame(v1=x, v2=y v3=z)- all have to have same # of rows but any type 
+            -access: a.df[1,2], cols by names a.df$v1, a.df[,"v1"]
+            - widely used in many packages 
+            -can trans df into matrix or vise-versa 
+            -expand: b.df by add a col or row 
+                    b.df=data.frame(a.df, v4=m) col
+                    c.df=rbind(a.df, list(v1=3 (numbers), v2=TRUE (logicals), v3="s" (characters)))
+```
+
+
+#Today
+```
+#ITERATION
+
+ ##Index vectors, mats, lists: with integers, booleans, names
+ ##if-else
+ ##Iteration- for , while, repeat 
+ 
+ #see lecture notes 
+ 
+ #IF-ELSE: if then else 
+  see noted for structure 
+  nested: if (x>0){
+            if(x<10){}
+              else{}
+          }else{}
+  
+  switch: helpful when there are many options 
+  ex) x.vec=c()
+        if (typesum=="mean"){y=mean(x.vec)}
+        else if (typesum=="median"){y=median(x.vec)}
+        else if (typesu,=="histogram"){hist(x.vec)}
+        else{print("i dont understand")}
+          so switch would be less complicated 
+  for loops-2 compontents and inefficient in R for large loops
+           -lessens your actions and code since it is looping
+  while loops- 2 compontents and more general
+            - continue to carry out with satisfying conditions 
+            - if always true it will always run and you will have to force stop
+ 
+```
+
+
+
+        

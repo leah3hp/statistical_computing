@@ -1,0 +1,84 @@
+---
+title: 'ADA1: Class 01, Medical Records Assignment'
+author: "Your Name Here"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+---
+
+---
+
+# Rubric
+**PDS Ch 3: Medical Records Assignment** (slightly modified)
+
+Although in your project you will be working with previously collected data, it is important to understand what data look like as well as how they are coded and entered into a spreadsheet for analysis.
+
+Scenario: Imagine collecting medical records for 5 patients seeking treatment in a hospital emergency room.  Points for each component are indicated in parentheses.
+
+1. (2 p) Select 4 variables recorded on the medical forms (one should be a unique identifier, at least one should be a quantitative variable and at least one should be a categorical variable).
+
+2. (1 p) Select a brief name (ideally 8 characters or less) for each variable.
+
+3. (2 p) Determine the variable type and the range of admissible (possible) values for recording each variable (create indicator codes as needed).
+
+4. (2 p) List the variable names, labels, types, and response codes in the code book area (can be a table or a list, as demonstrated above).
+
+5. (2 p) Enter data (that you make up) for each patient in the data table area (to meet your needs, you may need to reformat the provided table).
+
+7. (1 p) Compile this Rmd file to an html and upload to crowdgrader on Thursday (do not include your name, keep it anonymous).
+
+Help: Look at "Help > Markdown quick reference" for how to make a table, and other formatting.
+
+---
+
+_This is a template for the assignment.  Modify this and turn it in._
+
+# Data
+
+Modify the table below.  First, you may want to complete the codebook below, then return to fill in data.
+
+ID|v2|v3
+-|-|-
+00001|a|x
+00002|b|y
+00003|c|z
+
+# Codebook
+_Note that I've removed the more complicated "table" options discussed in the video, the verbatim block is universally the best choice for us._
+
+
+## Verbatim block
+
+You can make a "verbatim" code block with your variables and values:
+
+```
+Each variable block should have this form:
+------------------------------------------
+Your nice variable name
+  Original variable name in data set
+  Description of variable
+  Variable type (categorical/numerical)
+  Range of values, or categorical levels and labels
+------------------------------------------
+
+
+ID
+  IDNUM
+  Unique Identifier
+  categorical
+  00001 - 99999
+Var_1_nice_name
+  V1ORG
+  variable 1 short description
+  categorical
+  0 = "type 1"
+  1 = "type 2"
+Var_2_good_name
+  V2ORG
+  variable 2 short description
+  continuous
+  [0, 120]
+```

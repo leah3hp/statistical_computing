@@ -1,0 +1,28 @@
+---
+title: "class  10 nothes"
+output: html_document
+---
+```
+x~ a amixture of normal dists
+f(x)= p(phi1(x, mu, sigma2)+ (1-p)phi2(x, mu2, sigma2))
+{ x=zx1+ (1-z)x2
+where 
+z~bern(p)
+x1~n(mu1, sigma2)
+x2~n(mu2, sigma2)}
+```
+
+``` 
+example on line 24 
+
+0 11 0111 01 
+y=c(0,0,0,......0)
+i=1, k=1 
+if (x[1]==1)
+then y[1]=y[1]+1 
+or k=k+1 
+y[1]=0
+k=2, i=2 y[2]=1
+i=3 y[2]=2
+i=4, k=3 ...
+```
